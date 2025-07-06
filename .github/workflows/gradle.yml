@@ -19,16 +19,23 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
-
-    # 添加权限修复步骤
+        
     - name: Make gradlew executable
-      run: chmod +x gradlew  # 关键修复：添加执行权限
-
+      run: chmod +x gradlew
+      
+    - name: Set Gradle properties
+      run: |
+        echo "mc_version=1.12.2" >> gradle.properties
+        echo "forge_version=14.23.5.2860" >> gradle.properties
+        echo "mappings=snapshot_20171003" >> gradle.properties
+        cat gradle.properties  # 验证属性设置
+        
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
-
+      
     - name: Build with Gradle Wrapper
-      run: ./gradlew build
+      run: ./gradlew build --stacktrace
+
 
   dependency-submission:
     runs-on: ubuntu-latest
