@@ -19,6 +19,7 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
+        cache: 'gradle'
         
     - name: Make gradlew executable
       run: chmod +x gradlew
@@ -32,28 +33,21 @@ jobs:
         cat gradle.properties
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+      uses: gradle/actions/setup-gradle@v3
       
-    # 修改构建命令
     - name: Build with Gradle Wrapper
       run: ./gradlew build jar --stacktrace
       
-    # 添加调试步骤
-    - name: List build outputs
-      run: |
-        echo "构建输出目录:"
-        ls -lR build
-        echo "libs 目录:"
-        ls -l build/libs
-        
-    # 上传生成的MOD文件
+    - name: Verify build outputs
+      run: ls -lh build/libs
+      
     - name: Upload mod artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mod-artifact
         path: build/libs/*.jar
+        retention-days: 3
 
-  # 依赖提交作业保持不变
   dependency-submission:
     runs-on: ubuntu-latest
     permissions:
@@ -75,6 +69,5 @@ jobs:
         echo "mappings=snapshot_20171003" >> gradle.properties
         echo "jei_version=4.16.1.302" >> gradle.properties
     
-    # 禁用依赖关系图生成
-    - name: Skip dependency graph generation
-      run: echo "Skipping dependency graph due to Gradle 2.14 incompatibility"
+    - name: Skip dependency graph
+      run: echo "Dependency graph skipped for Gradle 2.14"
