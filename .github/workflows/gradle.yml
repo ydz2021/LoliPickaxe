@@ -57,5 +57,7 @@ jobs:
         echo "forge_version=14.23.5.2860" >> gradle.properties
         echo "mappings=snapshot_20171003" >> gradle.properties
         echo "jei_version=4.16.1.302" >> gradle.properties
-    - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582
+    
+    # 禁用依赖关系图生成
+    - name: Skip dependency graph generation
+      run: echo "Skipping dependency graph due to Gradle 2.14 incompatibility"
